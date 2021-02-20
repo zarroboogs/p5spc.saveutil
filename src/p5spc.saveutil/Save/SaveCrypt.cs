@@ -12,7 +12,7 @@ namespace P5SPCSaveUtil.Save
             return slot > 9;
         }
 
-        public static void CryptFile(string path, string path_out, long key)
+        public static void CryptFile(string path, string pathOut, long key)
         {
             var data = File.ReadAllBytes(path).AsSpan();
             var before = IsEncrypted(data);
@@ -30,11 +30,11 @@ namespace P5SPCSaveUtil.Save
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(path_out))
-                path_out = $"{path}_crypt";
+            if (string.IsNullOrWhiteSpace(pathOut))
+                pathOut = $"{path}_crypt";
 
-            Console.WriteLine($"Writing to {path_out}...");
-            File.WriteAllBytes(path_out, data.ToArray());
+            Console.WriteLine($"Writing to {pathOut}...");
+            File.WriteAllBytes(pathOut, data.ToArray());
 
             Console.WriteLine("Done.");
         }
