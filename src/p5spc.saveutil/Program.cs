@@ -36,6 +36,8 @@ namespace P5SPCSaveUtil
                 h.Copyright = "";
                 h.AutoVersion = false;
                 h.AddDashesToOption = true;
+                h.AddEnumValuesToHelpText = true;
+                h.MaximumDisplayWidth = 120;
                 return h;
             },
             e => e,
@@ -65,7 +67,7 @@ namespace P5SPCSaveUtil
                 return 1;
             }
 
-            SaveConvert.ConvertFile(o.PathIn, o.PathOut);
+            SaveConvert.ConvertFile(o.PathIn, o.PathOut, o.Target);
 
             return 0;
         }

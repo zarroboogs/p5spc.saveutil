@@ -1,23 +1,45 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Linq;
 
 namespace P5SPCSaveUtil.Save
 {
-    public record SaveFormat(string Name, int Size, int NameLength);
+    public enum SaveFmt
+    {
+        Switch_JP,
+        Switch_EN,
+        PC
+    }
+
+    public record SaveFmtDesc(SaveFmt Format, int Size, int NameLength);
 
     public class SaveConvert
     {
-        static readonly SaveFormat[] _formats = new SaveFormat[]
+        static readonly SaveFmtDesc[] Formats =
         {
-            new ("switch_jp", 0x600000, 13),
-            new ("pc", 0x55DEA0, 33),
+            new (SaveFmt.Switch_JP, 0x600000, 13),
+            new (SaveFmt.Switch_EN, 0x600000, 33),
+            new (SaveFmt.PC,        0x55DEA0, 33),
         };
 
-        public static void ConvertFile(string path, string path_out)
+        public static SaveFmtDesc DetectPlatform(Span<byte> data)
+        {
+            foreach (var fmt in Formats)
+            {
+                var lang = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(0x1C + 0x88DF4 + fmt.NameLength * 2 + 6, 4)) == 0xFFFF;
+                var sz = fmt.Size == data.Length;
+
+                if (lang && sz) return fmt;
+            }
+
+            return null;
+        }
+
+        public static void ConvertFile(string path, string pathOut, SaveFmt dstFmt)
         {
             var data = File.ReadAllBytes(path);
-            var srcFormat = _formats.Where(x => x.Size == data.Length).FirstOrDefault();
+            var srcFormat = DetectPlatform(data);
 
             if (srcFormat == null)
             {
@@ -25,27 +47,27 @@ namespace P5SPCSaveUtil.Save
                 return;
             }
 
-            Console.WriteLine($"Detected format <{srcFormat.Name}>...");
+            Console.WriteLine($"Detected format <{srcFormat.Format}>...");
 
-            var dstFormat = srcFormat.Name == "switch_jp" ? _formats[1] : _formats[0];
-            Console.WriteLine($"Converting to <{dstFormat.Name}> format...");
+            var dstFormat = Formats.Where(x => x.Format == dstFmt).FirstOrDefault();
+            Console.WriteLine($"Converting to <{dstFormat.Format}> format...");
 
             data = Convert(data, srcFormat, dstFormat);
 
-            if (string.IsNullOrWhiteSpace(path_out))
-                path_out = $"{path}_conv";
+            if (string.IsNullOrWhiteSpace(pathOut))
+                pathOut = $"{path}_conv";
 
-            Console.WriteLine($"Writing to {path_out}...");
-            File.WriteAllBytes(path_out, data);
+            Console.WriteLine($"Writing to {pathOut}...");
+            File.WriteAllBytes(pathOut, data);
 
             Console.WriteLine("Done.");
         }
 
-        public static byte[] Convert(byte[] data, SaveFormat inFormat, SaveFormat outFormat)
+        public static byte[] Convert(byte[] data, SaveFmtDesc inFormat, SaveFmtDesc outFormat)
         {
-            var headerSize = 0xC; // relative to save file
+            var headerSize = 0x1C; // relative to save file
             var baseSize = 0x88DF4; // relative to game save, size without name
-            var nameOffset = 0x87852; // relative to game save
+            var nameOffset = 0x87842; // relative to game save
 
             var saveGameSize = baseSize + outFormat.NameLength * 2;
 
