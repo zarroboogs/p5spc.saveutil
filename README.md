@@ -21,15 +21,23 @@ _Example - encrypted save above, decrypted below_:
 
 ## Converting Saves
 
-Only conversion between Switch JP saves and PC saves is supported for now.
+Supported save formats: `Switch_JP` / `Switch_EN` / `PC`.
 
 - Decrypt a PC save (`SAVEDATA.BIN`), or dump a save from Switch (`savedata`).
 
-- The source and destination formats will be auto-detected.
+- The source format will be auto-detected.
 
 - To convert:
 
-  `p5spc.saveutil.exe convert --input <path/to/savedata>`
+  - Switch JP/EN save to a PC save:
+
+    `p5spc.saveutil.exe convert --input <path/to/savedata> --target PC`
+
+  - Switch JP save to a Switch EN save:
+
+    `p5spc.saveutil.exe convert --input <path/to/savedata> --target Switch_EN`
+
+  - Etc.
 
 _Example - Switch JP save converted to PC save_:
 
