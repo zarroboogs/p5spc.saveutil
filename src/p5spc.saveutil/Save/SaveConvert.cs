@@ -9,7 +9,8 @@ namespace P5SPCSaveUtil.Save
     {
         Switch_JP,
         Switch_EN,
-        PC
+        PC,
+        PS4_JP,
     }
 
     public record SaveFmtDesc(SaveFmt Format, int Size, int NameLength);
@@ -21,13 +22,14 @@ namespace P5SPCSaveUtil.Save
             new (SaveFmt.Switch_JP, 0x600000, 13),
             new (SaveFmt.Switch_EN, 0x600000, 33),
             new (SaveFmt.PC,        0x55DEA0, 33),
+            new (SaveFmt.PS4_JP,    0x55DB2C, 13),
         };
 
         public static SaveFmtDesc DetectPlatform(Span<byte> data)
         {
             foreach (var fmt in Formats)
             {
-                var lang = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(0x1C + 0x88DF4 + fmt.NameLength * 2 + 6, 4)) == 0xFFFF;
+                var lang = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(0x1C + 0x88DF4 + fmt.NameLength * 2 + 0x938, 4)) == 0x0036EE7F;
                 var sz = fmt.Size == data.Length;
 
                 if (lang && sz) return fmt;
