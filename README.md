@@ -3,7 +3,7 @@
 
 A simple save decryption, encryption and conversion utility for P5S PC.
 
-## Decrypting/Encrypting PC Saves
+## Decrypting or Encrypting PC Saves
 
 - Locate `SAVEDATA.BIN` under `%APPDATA%\SEGA\Steam\P5S\<account_id>\`
 
@@ -26,7 +26,7 @@ _Example - encrypted save above, decrypted below_:
 ### Supported Save Formats
 
 - `Switch_JP` / `Switch_EN`
-- `PC` - Saves must be [decrypted](#decrypting/encrypting-pc-saves) before converting
+- `PC` - Saves must be [decrypted](#decrypting-or-encrypting-pc-saves) before converting
 - `PS4_JP` - Saves must be decrypted before converting (e.g. using homebrew)
 
 ### Usage
@@ -43,6 +43,10 @@ _Example - encrypted save above, decrypted below_:
   `p5spc.saveutil.exe convert --input <path/to/savedata> --target <target_format>`
 
   With `<target_format>` being any of the formats described [above](#supported-save-formats)
+
+- Saves converted to PC format must be [encrypted](#decrypting-or-encrypting-pc-saves) before they can be used:
+
+  `p5spc.saveutil.exe crypt --input <path/to/savedata_conv> --steam <SteamID64>`
 
 _Example - Switch JP save converted to PC save_:
 
