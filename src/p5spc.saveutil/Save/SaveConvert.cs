@@ -11,6 +11,7 @@ namespace P5SPCSaveUtil.Save
         Switch_EN,
         PC,
         PS4_JP,
+        PS4_EN,
     }
 
     public record SaveFmtDesc(SaveFmt Format, int Size, int NameLength);
@@ -23,6 +24,7 @@ namespace P5SPCSaveUtil.Save
             new (SaveFmt.Switch_EN, 0x600000, 33),
             new (SaveFmt.PC,        0x55DEA0, 33),
             new (SaveFmt.PS4_JP,    0x55DB2C, 13),
+            new (SaveFmt.PS4_EN,    0x55DCBC, 33),
         };
 
         public static SaveFmtDesc DetectPlatform(Span<byte> data)

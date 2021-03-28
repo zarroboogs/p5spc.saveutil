@@ -8,8 +8,8 @@ namespace P5SPCSaveUtil.Save
     {
         public static bool IsEncrypted(Span<byte> data)
         {
-            var slot = BinaryPrimitives.ReadUInt32LittleEndian(data[4..]);
-            return slot > 9;
+            var slot = BinaryPrimitives.ReadInt32LittleEndian(data[4..]);
+            return slot < -1 || slot > 9;
         }
 
         public static void CryptFile(string path, string pathOut, long key)
