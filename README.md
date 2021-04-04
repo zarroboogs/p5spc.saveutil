@@ -7,7 +7,7 @@ A simple save decryption, encryption and conversion utility for P5S PC.
 
 - Locate `SAVEDATA.BIN` under `%APPDATA%/SEGA/Steam/P5S/<account_id>/`
 
-- Get the **SteamID64** associated with the account under which the save was created
+- Get the decimal **SteamID64** associated with the account under which the save was created
 
   The last segment of **SteamID3** will also work (`[U:1:<last_segment>]`)
 
